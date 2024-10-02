@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -65,6 +66,7 @@ fun Main() {
         = Modifier.weight(1f)) {
             composable(NavRoutes.Home.route) { Greeting() }
             composable(NavRoutes.Lists.route) { Lists() }
+            composable(NavRoutes.Imgs.route) { Imgs() }
         }
         BottomNavigationBar(navController = navController)
     }
@@ -163,6 +165,11 @@ fun Lists(modifier: Modifier = Modifier){
 data class Book(val author: String, val name: String)
 
 @Composable
+fun Imgs(modifier: Modifier = Modifier){
+
+}
+
+@Composable
 fun BottomNavigationBar(navController: NavController) {
     NavigationBar {
         val backStackEntry by navController.currentBackStackEntryAsState()
@@ -201,6 +208,11 @@ object NavBarItems {
             title = "Lists",
             image = Icons.Filled.Menu,
             route = "lists"
+        ),
+        BarItem(
+            title = "Imgs",
+            image = Icons.Filled.Face,
+            route = "imgs"
         )
     )
 }
@@ -213,6 +225,7 @@ data class BarItem(
 sealed class NavRoutes(val route: String) {
     object Home : NavRoutes("home")
     object Lists : NavRoutes("lists")
+    object Imgs : NavRoutes("imgs")
 }
 
 
