@@ -1,5 +1,6 @@
 package com.example.lr3
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -176,9 +177,19 @@ data class Book(val author: String, val name: String)
 
 @Composable
 fun Imgs(modifier: Modifier = Modifier){
-    val imageHeight = 360
+    val configuration = LocalConfiguration.current
+    val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE // Проверка на альбомную ориентацию
+
+    // Установка высоты изображения и начальных/конечных отступов в зависимости от ориентации
+    val imageHeight = if (isLandscape) 120 else 360 // измените высоту для альбомной ориентации
+    val imageWidth = imageHeight
     val startOffset = 10 // начальный отступ
-    val endOffset = LocalConfiguration.current.screenHeightDp - imageHeight // предельная позиция
+    val endOffset = if (isLandscape) {
+        configuration.screenWidthDp - imageWidth - 10 // предельная позиция для альбомной ориентации
+    } else {
+        configuration.screenHeightDp - imageHeight // предельная позиция для портретной ориентации
+    }
+
 
     var imageOffset by remember { mutableStateOf(startOffset) } // начальное положение
     val offset: Dp by animateDpAsState(
@@ -191,18 +202,20 @@ fun Imgs(modifier: Modifier = Modifier){
     )
 
     Box(
-        modifier = modifier.fillMaxSize().background(Color(0xFFDBD6F3))
+        modifier = modifier.fillMaxSize().background(Color(0xFFDBD6F3)),
     ) {
-        // Анимация смещения изображения
         Image(
             painter = painterResource(id = R.drawable.leon),
             contentScale = ContentScale.Crop,
             contentDescription = "My pet",
             modifier = Modifier
-                .padding(top = offset) // применяем смещение
+                .padding(
+                    start = if (isLandscape) offset else 0.dp, // Применяем смещение по оси X в альбомной ориентации
+                    top = if (!isLandscape) offset else 0.dp // Применяем смещение по оси Y в портретной ориентации
+                )
                 .size(imageHeight.dp)
                 .clip(CircleShape) // форма овала
-                .align(Alignment.Center) // размещаем изображение по центру
+                .align(if (isLandscape) Alignment.CenterStart else Alignment.Center) // размещаем изображение по центру
         )
 
 
